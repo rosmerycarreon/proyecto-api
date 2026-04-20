@@ -1,0 +1,43 @@
+# Dependencias
+node_modules
+npm-debug.log*
+npm-error.log*
+
+# Git
+.git
+.gitignore
+.github
+
+# Entorno
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+
+# Build/Testing
+dist
+build
+coverage
+.cache
+
+# Documentación
+README.md
+SETUP.md
+DOCKER.md
+
+# Test files
+test
+tests
+*.test.js
+*.spec.js
+
+# Docker
+Dockerfile
+docker-compose.yml
+.dockerignore

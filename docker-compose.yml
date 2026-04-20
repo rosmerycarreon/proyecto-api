@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    container_name: api-backend-container
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=${DB_HOST:-db4free.net}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
+      - DB_PORT=${DB_PORT:-3306}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_EXPIRATION=${JWT_EXPIRATION:-24h}
+    restart: unless-stopped
+    volumes:
+      - ./src:/app/src
+      - ./package.json:/app/package.json
+    networks:
+      - api-network
+    # Healthcheck para verificar que la API está lista
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    depends_on:
+      - db
+    stdin_open: true
+    tty: true
+
+  # Servicio de base de datos local (opcional)
+  # Comentar si usas MySQL remoto en db4free.net
+  # db:
+  #   image: mysql:8.0
+  #   container_name: mysql-container
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+  #     MYSQL_DATABASE: ${DB_NAME}
+  #     MYSQL_USER: ${DB_USER}
+  #     MYSQL_PASSWORD: ${DB_PASSWORD}
+  #   ports:
+  #     - "3306:3306"
+  #   volumes:
+  #     - mysql_data:/var/lib/mysql
+  #   networks:
+  #     - api-network
+  #   healthcheck:
+  #     test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 5
+
+  # Para proyectos que usen MySQL local, descomentar arriba
+  db:
+    image: busybox:1.35
+    container_name: db-placeholder
+    networks:
+      - api-network
+    command: echo "Using remote MySQL at db4free.net"
+
+networks:
+  api-network:
+    driver: bridge
+
+# Volúmenes (descomentar si usas MySQL local)
+# volumes:
+#   mysql_data:
+#     driver: local

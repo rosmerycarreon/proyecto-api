@@ -45,23 +45,28 @@ Copia `.env.example` a `.env` y configura tus credenciales:
 cp .env.example .env
 ```
 
-Edita `.env` con tus credenciales de db4free.net:
+Edita `.env` con tus credenciales de MySQL remoto:
 
 ```env
-DB_HOST=db4free.net
+DB_HOST=tu_host_remoto
 DB_USER=tu_usuario
 DB_PASSWORD=tu_contraseña
 DB_NAME=tu_base_datos
 DB_PORT=3306
-JWT_SECRET=tu_secret_clave_super_segura
+DB_SSL=false
+DB_SSL_CA=./ca.pem
+DB_SSL_REJECT_UNAUTHORIZED=false
+JWT_SECRET=tu_secreto_jwt_seguro
 JWT_EXPIRATION=24h
 NODE_ENV=development
 PORT=3000
 ```
 
+> Si tu proveedor de MySQL remoto requiere SSL, ajusta `DB_SSL=true` y proporciona la ruta `DB_SSL_CA` al certificado.
+
 ### 4. Configurar Base de Datos
 
-Consulta [SETUP.md](./SETUP.md) para crear tu base de datos en db4free.net.
+La aplicación crea automáticamente las tablas `users` y `items` al iniciar si no existen.
 
 ### 5. Ejecutar el servidor
 
@@ -253,8 +258,15 @@ proyecto-api/
 
 ## 🐳 Ejecutar con Docker
 
+### Usar Docker Compose
 ```bash
 docker-compose up
+```
+
+### Construir y ejecutar el contenedor manualmente
+```bash
+docker build -t backend-api .
+docker run -p 3000:3000 backend-api
 ```
 
 El servidor estará disponible en: `http://localhost:3000`
